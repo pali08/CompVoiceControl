@@ -9,6 +9,8 @@ import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 
 q = queue.Queue()
+text_to_command_queue_ = queue.Queue()
+text_to_command_var = None
 
 
 def int_or_str(text):
@@ -51,7 +53,8 @@ parser.add_argument(
 args = parser.parse_args(remaining)
 
 
-def get_voice_command(model=None, device=None, samplerate=None):
+# def get_voice_command(text_to_command_queue_arg, model=None, device=None, samplerate=None):
+def get_voice_command(text_to_command_queue, model=None, device=None, samplerate=None):
     try:
         if samplerate is None:
             device_info = sd.query_devices(device, "input")
@@ -73,14 +76,19 @@ def get_voice_command(model=None, device=None, samplerate=None):
             while True:
                 data = q.get()
                 if rec.AcceptWaveform(data):
-                    return json.loads(rec.Result())["text"]
+                    text_to_command_queue.put(json.loads(rec.Result())["text"])
+                    # text_to_command_var_arg = command
+                    # text_to_command_queue_arg.put(command)
 
     except KeyboardInterrupt:
-        print("\nDone")
-        parser.exit(0)
+        return
+        # print("\nDone")
+        # parser.exit(0)
     except Exception as e:
-        parser.exit(type(e).__name__ + ": " + str(e))
+        parser.exit(1, type(e).__name__ + ": " + str(e))
 
 
 if __name__ == '__main__':
-    get_voice_command()
+    get_voice_command(text_to_command_queue_)
+    print(text_to_command_var)
+    print(list(text_to_command_queue_.queue))
