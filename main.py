@@ -8,35 +8,32 @@ import pyautogui
 
 from voice_command_loader import get_voice_command
 
-
 text_to_command_queue_ = queue.Queue()
-movement_direction_vertical = 'down'
-movement_direction_horizontal = 'left'
-movements = {'up': -1, 'down': 1, 'left': -1, 'right': 1, 'stop':0}
+movement_direction = None
+movements = {'up': [-1, 0], 'down': [1, 0], 'left': [0, -1], 'right': [0, 1],
+             'up left': [-1, -1], 'up right': [-1, 1], 'down left': [1, -1], 'down right': [1, 1],
+             'stop': [0, 0]}
 
 screen_w, screen_h = pyautogui.size()
 lock = threading.Lock()
 
 
 def do_movement():
-    global movement_direction_vertical
-    global movement_direction_horizontal
+    global movement_direction
     while True:
-        pyautogui.move(movements[movement_direction_horizontal], movements[movement_direction_vertical])
+        if movement_direction is not None:
+            pyautogui.move(movement_direction[1], movement_direction[0])
 
 
 def set_variable(text_to_command_queue):
-    global movement_direction_horizontal
-    global movement_direction_vertical
+    global movement_direction
     while True:
-        # movement_direction_vertical = random.choice(['up', 'down', 'stop'])
-        # print(list(text_to_command_queue.))
         if not text_to_command_queue.empty():
-            movement_direction_vertical = text_to_command_queue.get()
-        movement_direction_horizontal = random.choice(['stop'])
-        print(movement_direction_horizontal)
-        print(movement_direction_vertical)
-        time.sleep(5)
+            try:
+                movement_direction = movements[text_to_command_queue.get()]
+            except KeyError:
+                print('unknown command')
+        # time.sleep(5)
 
 
 if __name__ == '__main__':
@@ -54,4 +51,3 @@ if __name__ == '__main__':
     thread1.join()
     thread2.join()
     thread3.join()
-
