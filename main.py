@@ -1,6 +1,7 @@
 # This is a sample Python script.
 import queue
 import random
+import sys
 import threading
 import time
 
@@ -41,6 +42,9 @@ if __name__ == '__main__':
     thread1 = threading.Thread(target=set_variable, args=[text_to_command_queue_])
     thread2 = threading.Thread(target=do_movement)
     thread3 = threading.Thread(target=get_voice_command, args=[text_to_command_queue_])
+    thread1.daemon = True
+    thread2.daemon = True
+    thread3.daemon = True
 
     # Start the threads
     thread1.start()
