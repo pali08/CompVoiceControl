@@ -37,6 +37,7 @@ def click():
     print(f'click count is {click_count}')
     print(f'click button is {click_button}')
     while True:
+        time.sleep(1)
         if click_count is not None and click_button is not None:
             print('i am doing some clicking')
             pyautogui.click(clicks=click_count, button=click_button)
