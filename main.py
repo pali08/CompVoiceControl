@@ -17,6 +17,7 @@ movements = {'up': [-1, 0], 'down': [1, 0], 'left': [0, -1], 'right': [0, 1],
 clicks = {'click': [1, 'left'], 'double click': [2, 'left'],
           'right click': [1, 'right'], 'right double click': [2, 'right'],
           'middle click': [1, 'middle']}
+
 click_count = None
 click_button = None
 screen_w, screen_h = pyautogui.size()
