@@ -18,6 +18,9 @@ clicks = {'click': [1, 'left'], 'double click': [2, 'left'],
           'right click': [1, 'right'], 'right double click': [2, 'right'],
           'middle click': [1, 'middle']}
 
+type_text = None
+
+
 click_count = None
 click_button = None
 screen_w, screen_h = pyautogui.size()
@@ -46,6 +49,16 @@ def click():
             click_button = None
 
 
+def keyboard_type():
+    while True:
+        time.sleep(1)
+        while True:
+            if type_text == 'stop typing':
+                break
+            if type_text != '':
+                pyautogui.typewrite(type_text + ' ')
+
+
 def set_variable(text_to_command_queue):
     global movement_direction
     global click_count
@@ -56,11 +69,15 @@ def set_variable(text_to_command_queue):
             if command in movements:
                 movement_direction = movements[command]
             elif command in clicks:
-                print(f'command in clicks is {command}')
                 click_count = clicks[command][0]
                 click_button = clicks[command][1]
-                print(click_count)
-                print(click_button)
+            elif command == 'type':
+                while True:
+                    if not text_to_command_queue.empty():
+                        typed_text = text_to_command_queue.get()
+                        if typed_text == 'stop typing':
+                            break
+                        pyautogui.typewrite(text_to_command_queue.get() + ' ')
             else:
                 print(command)
         # time.sleep(5)
